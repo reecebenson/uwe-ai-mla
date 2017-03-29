@@ -38,6 +38,11 @@ static double	inputs[NUM_FEATURES];
 static double	res[NUM_FEATURES];
 static double	w_res[NUM_SAMPLES];
 
+// > Normalisation
+static int		isNormalising = 0;
+static int		nrm_min =  100;
+static int		nrm_max = -100;
+
 // > Rates
 static int		curEpoch = 0;
 static int		maxEpoch = 23500;// 5380;
@@ -58,6 +63,7 @@ static double	oOutputs[NUM_FEATURES];
 // -> Main
 static void		nn_init();
 static double*	nn_train();
+static double	nn_normalise(double cur, double min, double max);
 static void		nn_generateweights();
 static double*	nn_getweights();
 static double*	nn_compute(double* xVals);
@@ -135,6 +141,28 @@ int train(double **trainingSamples, char *trainingLabels, int numSamples, int nu
 			}
 		}
 
+		// > Normalise our data (flag)
+		if (isNormalising)
+		{
+			// > Reset our variables
+			nrm_min =  100;
+			nrm_max = -100;
+
+			// > Go through each of our samples
+			for (s = 0; s < numSamples; s++)
+			{
+				for (f = 0; f < numFeatures; f++)
+				{
+					if (myModel[s][f] > nrm_max)
+						nrm_max = myModel[s][f];
+
+					if (myModel[s][f] < nrm_min)
+						nrm_min = myModel[s][f];
+				}
+				myModel[s][f] = nn_normalise(myModel[s][f], nrm_min, nrm_max);
+			}
+		}
+
 		// > Change our model array to hold data in this format: F=(5.1, 3.5, 1.4, 0.2) V=(1, 0, 0)
 		// -> Fill in myModelNN with zero data
 		for (s = 0; s < numSamples; s++)
@@ -192,8 +220,17 @@ int train(double **trainingSamples, char *trainingLabels, int numSamples, int nu
 char  predictLabel(double *sample, int numFeatures)
 {
 	// > Variables
-	int s;
+	int s, f;
 	char prediction = 'a';
+
+	// > Normalisation
+	if (isNormalising)
+	{
+		for (f = 0; f < numFeatures; f++)
+		{
+			sample[f] = nn_normalise(sample[f], nrm_min, nrm_max);
+		}
+	}
 
 	// > Find our prediction
 	if (isDebugging && isShowingPredictions) fprintf(stdout, "%d", curindex);
@@ -449,6 +486,11 @@ static double* nn_train()
 	return bestWeights;
 }
 
+static double nn_normalise(double cur, double min, double max)
+{
+	return (cur - min) / (max - min);
+}
+
 static void nn_generateweights()
 {
 	// > Variables
@@ -686,7 +728,7 @@ static int nn_predict(double* sample)
 	double* yValues = nn_compute(xValues);
 
 	// > Debug
-	if (isDebugging)
+	if (isDebugging && isShowingPredictions)
 	{
 		// > Print our sample
 		fprintf(stdout, " |   Sample Input: [");

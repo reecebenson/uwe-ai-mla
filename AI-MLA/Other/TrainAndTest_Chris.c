@@ -205,7 +205,7 @@ int  train(double **trainingSamples, char *trainingLabels, int numSamples, int n
 	max = 0;
 	min = 100;
 
-	for (i = 0; i < category; i++) {
+	/*for (i = 0; i < category; i++) {
 		for (j = 0; j < numFeatures; j++) {
 			for (k = 0; k < column[i].index; k++) {
 				if (column[i].point[k].data[j] > max) {
@@ -222,7 +222,7 @@ int  train(double **trainingSamples, char *trainingLabels, int numSamples, int n
 			for (n = 0; n < column[i].index; n++) {
 			}
 		}
-	}
+	}*/
 
 
 	/////////////////////////////////////////////
@@ -275,7 +275,7 @@ int  train(double **trainingSamples, char *trainingLabels, int numSamples, int n
 	int counter = 0;
 	int p = 0;
 	int q = 0;
-	int epochs = 15000;
+	int epochs = 50000;
 	int epochCount;
 	double error[NUM_SAMPLES];
 
@@ -497,7 +497,11 @@ int  train(double **trainingSamples, char *trainingLabels, int numSamples, int n
 				biasWeightCount = ((numFeatures*hiddenNodes) + (hiddenNodes * category));
 			}
 		}
-			printf("Total Error ---> %f\t\n", totalError/numSamples);
+			//printf("Total Error ---> %f\t\n", totalError/numSamples);
+	}
+
+	for (i = 0; i < weights; i++) {
+		fprintf(stdout, "w[%d] = %f;\n", i, w[i]);
 	}
 
 	return returnval;
@@ -526,9 +530,9 @@ char  predictLabel(double *sample, int numFeatures)
 	/////////////
 	//normalize//
 	/////////////
-	for (j = 0; j < numFeatures; j++) {
+	/*for (j = 0; j < numFeatures; j++) {
 		sample[j] = (sample[j] - min) / (max - min);
-	}
+	}*/
 
 	////////////////////////
 	//hidden layer sorting//
