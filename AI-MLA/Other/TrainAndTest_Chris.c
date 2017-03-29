@@ -56,11 +56,6 @@ double sigmoid(double nodeWeights) {
 }
 
 
-double fRand(double fMin, double fMax)
-{
-	double f = (double)rand() / 32767;// 2147483647;
-	return fMin + f * (fMax - fMin);
-}
 double normlizeData(double currentValue, double maxCategoryValue, double minCategoryValue) {
 	return (currentValue - minCategoryValue) / (maxCategoryValue - minCategoryValue);
 }
@@ -241,7 +236,7 @@ int  train(double **trainingSamples, char *trainingLabels, int numSamples, int n
 	}
 
 	// Set Weights
-	w[0] = -0.099750;
+	/*w[0] = -0.099750;
 	w[1] = 0.012717;
 	w[2] = -0.061339;
 	w[3] = 0.061748;
@@ -267,7 +262,7 @@ int  train(double **trainingSamples, char *trainingLabels, int numSamples, int n
 	w[23] = -0.099066;
 	w[24] = -0.098218;
 	w[25] = -0.024424;
-	w[26] = 0.006333;
+	w[26] = 0.006333;*/
 
 	/*for (i = 0; i < weights; i++) {
 		w[i] = 0;
@@ -611,4 +606,11 @@ char  predictLabel(double *sample, int numFeatures)
 
 	return prediction;
 
+}
+
+
+double fRand(double fMin, double fMax)
+{
+	double f = (double)rand() / 2147483647;//32767;// 2147483647;
+	return fMin + f * (fMax - fMin);
 }
