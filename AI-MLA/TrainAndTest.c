@@ -226,7 +226,7 @@ char  predictLabel(double *sample, int numFeatures)
 // -> Calculate random value
 double fRand(double fMin, double fMax)
 {
-	double f = (double)rand() / 2147483647; // INT_MAX
+	double f = (double)rand() / 2147483647; //32767;//2147483647; // INT_MAX
 	return fMin + f * (fMax - fMin);
 }
 
@@ -318,14 +318,14 @@ static double* nn_train()
 		}
 
 		// > Shuffle our sequence (to check our training data in a random order)
-		nn_shuffle(sequence);
+		//nn_shuffle(sequence); // [NOTE-A] < Commented out as it requires less epochs and any RAND_MAX value (32767 or 2147483647) to be able to generate a low error
 
 		// > Go through our training samples
 		int id;
 		for (x = 0; x < NUM_TRAINING_SAMPLES; x++)
 		{
 			// > Set our ID
-			id = sequence[x];
+			id = x; // [NOTE-A] < Commented out as it requires less epochs and any RAND_MAX value (32767 or 2147483647) to be able to generate a low error //sequence[x];
 
 			// > Move our features to xValues
 			for (f = 0; f < NUM_FEATURES; f++)
